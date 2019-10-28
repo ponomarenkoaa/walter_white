@@ -1,11 +1,11 @@
 import argparse
 import logging
-import time
-from PyEIS import extract_mpt
 import os
-from watchdog.events import LoggingEventHandler
-from watchdog.observers import Observer
+import time
+
+from PyEIS import extract_mpt
 from watchdog.events import LoggingFileSystemEventHandler
+from watchdog.observers import Observer
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',
@@ -23,7 +23,7 @@ class MprFilesHandler(LoggingFileSystemEventHandler):
                 if event.src_path.endswith("PEIS_C01.mpt"):
                     file_path, file_name = os.path.split(event.src_path)
                     data = extract_mpt(file_path + "/", file_name)
-                    print(data.head())
+                    print(data.head())  # TODO: finish this logic
 
 
 if __name__ == '__main__':
