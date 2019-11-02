@@ -75,8 +75,10 @@ class MprFilesHandler(LoggingFileSystemEventHandler):
             print(peis1_value)
 
             mp_c01_df["U korr/V"] = mp_c01_df["EweV"] - (mp_c01_df["I_avg"] / 1000 * peis1_value)
-            print(mp_c01_df)
 
+            oberflaeche = 0.073
+            mp_c01_df["mA/cm2"] = mp_c01_df["I_avg"]/oberflaeche
+            print(mp_c01_df)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
