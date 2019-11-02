@@ -4,7 +4,7 @@ run-app:
 	docker run -it fresser
 
 run-app-local:
-	python fresser/main.py /Users/anna.ponomarenko/Work/walter_white_project/CLER_HCl
+	python fresser/main.py /Users/renarde/Downloads/projects/walter_white/tmp
 
 run-trigger:
 	rm -rf /Users/anna.ponomarenko/Work/walter_white_project/CLER_HCl/trigger

@@ -53,10 +53,13 @@ def prepare_mp_c01_file(fpath: str) -> pd.DataFrame:
 
 
 class MprFilesHandler(LoggingFileSystemEventHandler):
+    def __init__(self):
+        self.peis_c01_df = None
+
     def on_created(self, event):
         if event.is_directory:
             logging.info("Directory %s created" % event.src_path)
-            time.sleep(8)
+            time.sleep(5)
             directory_files = [os.path.join(event.src_path, f) for f in os.listdir(event.src_path)]
 
             peis_c01_files = [f for f in directory_files if f.endswith("03_PEIS_C01.mpt")]
@@ -77,6 +80,8 @@ class MprFilesHandler(LoggingFileSystemEventHandler):
             mp_c01_df["U korr/V"] = mp_c01_df["EweV"] - (mp_c01_df["I_avg"] / 1000 * peis1_value)
             print(mp_c01_df)
 
+            self.peis_c01_df = peis_c01_df
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -88,9 +93,11 @@ if __name__ == '__main__':
     observer.schedule(event_handler, args.path, recursive=True)
     logging.info("Observing directory %s" % args.path)
     observer.start()
+    logging.info("something happening here")
     try:
         while True:
             time.sleep(1)
+            logging.info("and every second, here")
     except KeyboardInterrupt:
         observer.stop()
     observer.join()
