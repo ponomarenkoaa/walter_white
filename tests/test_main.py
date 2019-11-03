@@ -3,13 +3,14 @@ from fresser.main import MprFilesHandler
 from watchdog.observers import Observer
 import shutil, tempfile
 import logging
-import os 
-import pandas as pd 
-import time 
+import os
+import pandas as pd
+import time
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',
                     datefmt='%Y-%m-%d %H:%M:%S')
+
 
 def copytree(src, dst, symlinks=False, ignore=None):
     for item in os.listdir(src):
@@ -19,6 +20,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
             shutil.copytree(s, d, symlinks, ignore)
         else:
             shutil.copy2(s, d)
+
 
 class BaseTest(unittest.TestCase):
 
@@ -34,13 +36,14 @@ class BaseTest(unittest.TestCase):
 
     def tearDown(self):
         # Remove the directory after the test
-        shutil.rmtree(self.test_dir)
         self.observer.stop()
+        shutil.rmtree(self.test_dir)
 
     def test_sample(self):
-        copytree("tests/resources",self.test_dir)
+        copytree("tests/resources", self.test_dir)
         time.sleep(10)
-        self.assertIsInstance(self.event_handler.peis_c01_df,pd.DataFrame)
+        self.assertIsInstance(self.event_handler.peis_c01_df, pd.DataFrame)
+
 
 if __name__ == '__main__':
     print("Starting tests")

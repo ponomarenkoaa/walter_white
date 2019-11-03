@@ -1,0 +1,29 @@
+version: '3.2'
+services:
+  walter:
+    depends_on:
+      - postgres
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USER=walter
+      - POSTGRES_DB=walter
+      - POSTGRES_PASSWORD=goto@Experiment1
+  superset-postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: superset
+      POSTGRES_PASSWORD: superset
+      POSTGRES_USER: superset
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_USER=walter
+      - POSTGRES_DB=walter
+      - POSTGRES_PASSWORD=goto@Experiment1
+    ports:
+      - "5432:5432"

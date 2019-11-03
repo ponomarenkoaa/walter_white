@@ -1,12 +1,10 @@
 
-run-app:
-	docker build -t fresser .
-	docker run -it fresser
+run-appliance:
+	docker-compose up --build
 
-run-app-local:
-	python fresser/main.py /Users/renarde/Downloads/projects/walter_white/tmp
+trigger-test:
+	docker-compose exec walter cp -R /usr/bin/app/tests/resources/trigger /usr/bin/app/data_input
 
-run-trigger:
-	rm -rf /Users/anna.ponomarenko/Work/walter_white_project/CLER_HCl/trigger
-	cp -R /Users/anna.ponomarenko/Work/walter_white_project/trigger /Users/anna.ponomarenko/Work/walter_white_project/CLER_HCl
 
+run-walter:
+	docker-compose up --build walter
