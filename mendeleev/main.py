@@ -72,7 +72,7 @@ class MprFilesHandler(LoggingFileSystemEventHandler):
 
             result_df = merged_df[["impedanz1", "cycle", "clean_times", "spanung"]]
             result_df["load_dttm"] = pd.datetime.now()
-
+            result_df["probe_index"] = event.src_path.split("/")[-1]
             psql_string = 'postgresql://{user}:{password}@postgres:5432/{db}'.format(user=POSTGRES_USER,
                                                                                      password=POSTGRES_PASSWORD,
                                                                                      db=POSTGRES_DB)

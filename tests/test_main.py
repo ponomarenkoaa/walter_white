@@ -1,11 +1,14 @@
-import unittest
-from fresser.main import MprFilesHandler
-from watchdog.observers import Observer
-import shutil, tempfile
 import logging
 import os
-import pandas as pd
+import shutil
+import tempfile
 import time
+import unittest
+
+import pandas as pd
+from watchdog.observers import Observer
+
+from mendeleev.main import MprFilesHandler
 
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(message)s',
@@ -42,7 +45,6 @@ class BaseTest(unittest.TestCase):
     def test_sample(self):
         copytree("tests/resources", self.test_dir)
         time.sleep(10)
-        self.assertIsInstance(self.event_handler.peis_c01_df, pd.DataFrame)
 
 
 if __name__ == '__main__':

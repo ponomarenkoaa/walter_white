@@ -7,7 +7,7 @@ WORKDIR ${APP_PATH}
 
 ADD requirements.txt ${APP_PATH}/requirements.txt
 RUN pip install -r requirements.txt
-ADD /fresser ${APP_PATH}/fresser
+ADD /mendeleev ${APP_PATH}/mendeleev
 ADD /tests ${APP_PATH}/tests
 
-ENTRYPOINT ["python","fresser/main.py","/usr/bin/app/data_input"]
+ENTRYPOINT ["python","mendeleev/main.py","/usr/bin/app/data_input"]
