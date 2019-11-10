@@ -1,0 +1,11 @@
+FROM python:3.7-slim
+
+ENV APP_PATH=/usr/bin/app
+RUN mkdir -p ${APP_PATH}
+WORKDIR ${APP_PATH}
+
+ADD rutherford-requirements.txt ${APP_PATH}/requirements.txt
+RUN pip install -r requirements.txt
+ADD /rutherford ${APP_PATH}/rutherford
+
+ENTRYPOINT ["python","rutherford/main.py"]

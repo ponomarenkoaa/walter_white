@@ -5,7 +5,7 @@ services:
       - postgres
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.mendeleev
     environment:
       - POSTGRES_USER=mendeleev
       - POSTGRES_DB=mendeleev
@@ -18,8 +18,17 @@ services:
       - POSTGRES_PASSWORD=goto@Experiment1
     ports:
       - "5432:5432"
-
-
-volumes:
-  redis:
-  superset:
+  rutherford:
+    restart: always
+    depends_on:
+      - mendeleev
+      - postgres
+    build:
+      context: .
+      dockerfile: Dockerfile.rutherford
+    environment:
+      - POSTGRES_USER=mendeleev
+      - POSTGRES_DB=mendeleev
+      - POSTGRES_PASSWORD=goto@Experiment1
+    ports:
+      - "8050:8050"

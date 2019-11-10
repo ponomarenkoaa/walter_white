@@ -1,4 +1,5 @@
 import logging
+import os
 
 import dash
 import dash_core_components as dcc
@@ -13,18 +14,15 @@ from sqlalchemy import create_engine
 FORMAT = u'[%(asctime)s] %(levelname)s %(message)s'
 logging.basicConfig(format=FORMAT, level=logging.INFO)
 
-# POSTGRES_USER = os.environ["POSTGRES_USER"]
-# POSTGRES_DB = os.environ["POSTGRES_DB"]
-# POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
-POSTGRES_USER = "mendeleev"
-POSTGRES_DB = "mendeleev"
-POSTGRES_PASSWORD = "goto@Experiment1"
+POSTGRES_USER = os.environ["POSTGRES_USER"]
+POSTGRES_DB = os.environ["POSTGRES_DB"]
+POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
 
 
 def data_callback():
-    psql_string = 'postgresql://{user}:{password}@localhost:5432/{db}'.format(user=POSTGRES_USER,
-                                                                              password=POSTGRES_PASSWORD,
-                                                                              db=POSTGRES_DB)
+    psql_string = 'postgresql://{user}:{password}@postgres:5432/{db}'.format(user=POSTGRES_USER,
+                                                                             password=POSTGRES_PASSWORD,
+                                                                             db=POSTGRES_DB)
     engine = create_engine(psql_string)
     return pd.read_sql_table("f_experiment", engine)
 
@@ -52,44 +50,46 @@ cycles_named = [
     for c in cycles
 ]
 
+visual_layout = html.Div([
+    html.Div([
+        html.H2('Cycle selector'),
+        dcc.Dropdown(
+            id="cycle-selector",
+            options=cycles_named,
+            value=cycles[0:3],
+            multi=True
+        ),
+        html.H2('Data sample'),
+        # ["impedanz1", "cycle", "clean_times", "spanung"]
+        dash_table.DataTable(
+            id='table',
+            columns=[
+                {"name": "impedanz", "id": "impedanz1", 'type': 'numeric', 'format': Format(precision=5)},
+                {"name": "cycle", "id": "cycle"},
+                {"name": "clean_times", "id": "clean_times"},
+                {"name": "spanung", "id": "spanung", 'type': 'numeric', 'format': Format(precision=6)}
+            ],
+            data=exp_data.to_dict('records'),
+            # fixed_rows={'headers': True, 'data': 0},
+            style_table={
+                'overflowX': "scroll",
+                'maxHeight': '58vh',
+                'overflowY': 'scroll'
+            },
+            style_cell_conditional=[
+                {'if': {'column_id': 'cycle'},
+                 'width': '60px'}
+            ]
+        )
+    ], className="four columns"),
+    html.Div([
+        dcc.Graph(id='graph-with-slider', style={"minHeight": "85vh"}),
+    ], className="eight columns")
+], className="row")
+
 app.layout = html.Div(children=[
     html.H1("Rutherford - experiment data visualization system", style={"textAlign": "center"}),
-    html.Div([
-        html.Div([
-            html.H2('Cycle selector'),
-            dcc.Dropdown(
-                id="cycle-selector",
-                options=cycles_named,
-                value=cycles[0:3],
-                multi=True
-            ),
-            html.H2('Data sample'),
-            # ["impedanz1", "cycle", "clean_times", "spanung"]
-            dash_table.DataTable(
-                id='table',
-                columns=[
-                    {"name": "impedanz", "id": "impedanz1", 'type': 'numeric', 'format': Format(precision=5)},
-                    {"name": "cycle", "id": "cycle"},
-                    {"name": "clean_times", "id": "clean_times"},
-                    {"name": "spanung", "id": "spanung", 'type': 'numeric', 'format': Format(precision=6)}
-                ],
-                data=exp_data.to_dict('records'),
-                # fixed_rows={'headers': True, 'data': 0},
-                style_table={
-                    'overflowX': "scroll",
-                    'maxHeight': '58vh',
-                    'overflowY': 'scroll'
-                },
-                style_cell_conditional=[
-                    {'if': {'column_id': 'cycle'},
-                     'width': '60px'}
-                ]
-            )
-        ], className="four columns"),
-        html.Div([
-            dcc.Graph(id='graph-with-slider', style={"minHeight": "85vh"}),
-        ], className="eight columns")
-    ], className="row"),
+    visual_layout
 ])
 
 
@@ -125,4 +125,4 @@ def update_figure(selected_cycles):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, host="0.0.0.0", port=8050)
